@@ -1,26 +1,82 @@
 from products import Product
 from store import Store
 
-bose = Product("Bose QuietComfort Earbuds", price=250, quantity=500)
-mac = Product("MacBook Air M2", price=1450, quantity=100)
+def start(store):
+    while True:
+        print("\nStore Menu \n---------- \n1. List all products in store \n2. Show total amount in store \n3. Make an order \n4. Quit")
 
-print(bose.buy(50))
-print(mac.buy(100))
-print(mac.is_active())
+        choice = input("\nPlease choose a number: ")
 
-bose.show()
-mac.show()
+        if choice == "1":
+            products = store.get_all_products()
+            print("------")
+            for product in products:
+                product.show()
+            print("------")
 
-bose.set_quantity(1000)
-bose.show()
+        elif choice == "2":
+            print(f"Total quantity in store: {store.get_total_quantity()}")
 
-product_list = [Product("MacBook Air M2", price=1450, quantity=100),
-                Product("Bose QuietComfort Earbuds", price=250, quantity=500),
-                Product("Google Pixel 7", price=500, quantity=250),
-               ]
 
-best_buy = Store(product_list)
-products = best_buy.get_all_products()
-print(best_buy.get_total_quantity())
-print(best_buy.order([(products[0], 1), (products[1], 2)]))
-print(best_buy.get_total_quantity())
+        elif choice == "3":
+            all_products = store.get_all_products()
+            print("------")
+            for i, product in enumerate(all_products, start=1):
+                print(f"{i}. ", end="")
+                product.show()
+            print("------")
+
+            print("When you want to finish order, enter empty text.")
+
+            shopping_list = []
+
+            while True:
+                product_number = input("Which product # do you want? ")
+
+                if product_number == "":
+                    break
+
+                try:
+                    product_number = int(product_number)
+
+                    if product_number < 1 or product_number > len(all_products):
+                        print("Invalid product number.")
+                        continue
+
+                    quantity = input("What amount do you want? ")
+
+                    if quantity == "":
+                        break
+
+                    quantity = int(quantity)
+
+                    shopping_list.append((all_products[product_number - 1], quantity))
+
+                    print("Product added to list!\n")
+
+                except ValueError:
+                    print("Please enter a valid number.")
+
+            if shopping_list:
+                total_price = store.order(shopping_list)
+
+                print("********")
+                print(f"Order made! Total payment: ${total_price}")
+
+        elif choice == "4":
+            break
+
+        else:
+            print("Invalid choice")
+
+def main():
+    product_list = [Product("MacBook Air M2", price=1450, quantity=100),
+                    Product("Bose QuietComfort Earbuds", price=250, quantity=500),
+                    Product("Google Pixel 7", price=500, quantity=250)]
+
+    best_buy = Store(product_list)
+
+    start(best_buy)
+
+if __name__ == "__main__":
+    main()
