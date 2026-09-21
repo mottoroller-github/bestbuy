@@ -10,20 +10,23 @@ def start(store):
         if choice == "1":
             products = store.get_all_products()
             print("------")
+
             for product in products:
                 product.show()
+
             print("------")
 
         elif choice == "2":
             print(f"Total quantity in store: {store.get_total_quantity()}")
 
-
         elif choice == "3":
             all_products = store.get_all_products()
             print("------")
+
             for i, product in enumerate(all_products, start=1):
                 print(f"{i}. ", end="")
                 product.show()
+
             print("------")
 
             print("When you want to finish order, enter empty text.")
@@ -40,28 +43,24 @@ def start(store):
                     product_number = int(product_number)
 
                     if product_number < 1 or product_number > len(all_products):
-                        print("Invalid product number.")
-                        continue
+                        raise Exception()
 
-                    quantity = input("What amount do you want? ")
-
-                    if quantity == "":
-                        break
-
-                    quantity = int(quantity)
-
+                    quantity = int(input("What amount do you want? "))
                     shopping_list.append((all_products[product_number - 1], quantity))
 
                     print("Product added to list!\n")
 
-                except ValueError:
-                    print("Please enter a valid number.")
+                except Exception:
+                    print("Error adding product!")
 
-            if shopping_list:
+            try:
                 total_price = store.order(shopping_list)
 
                 print("********")
                 print(f"Order made! Total payment: ${total_price}")
+
+            except Exception as e:
+                print(f"Error while making order! {e}")
 
         elif choice == "4":
             break
